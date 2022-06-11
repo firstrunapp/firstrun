@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firstrun-api
+spec:
+  selector:
+    matchLabels:
+      app: firstrun-api
+  template:
+    metadata:
+      labels:
+        app: firstrun-api
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: firstrun-api
+          image: firstrun-api
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 200m
+              memory: 1000Mi
+            requests:
+              cpu: 100m
+              memory: 500Mi
+          command:
+            - "/firstrun-api"
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace

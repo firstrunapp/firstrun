@@ -1,0 +1,35 @@
+FROM golang:1.17
+
+ENV GOCACHE "/.cache/gocache/"
+ENV GOMODCACHE "/.cache/gomodcache/"
+
+EXPOSE 3000
+EXPOSE 6060
+
+ENV PROJECT_PATH=/go/src/github.com/firstrunhq/firstrun
+WORKDIR $PROJECT_PATH
+
+# RUN --mount=target=$GOMODCACHE,type=cache,id=firstrun-gomodcache \
+#     --mount=target=$GOCACHE,type=cache,id=firstrun-gocache
+
+COPY go.mod go.sum ./
+RUN --mount=target=$GOMODCACHE,type=cache,id=firstrun-gomodcache \
+    --mount=target=$GOCACHE,type=cache,id=firstrun-gocache \
+    go mod download
+
+
+## Now add the project and compile
+COPY . /go/src/github.com/marc-campbell/firstrun
+RUN --mount=type=cache,target=$GOMODCACHE,id=firstrun-gomodcache \
+    --mount=type=cache,target=$GOCACHE,id=firstrun-gocache \
+    make build
+
+# RUN --mount=target=/tmp/.cache/gocache,id=firstrun-gocache,type=cache \
+#     mkdir -p $GOCACHE \
+#     && cp -r /tmp/.cache/gocache/* $GOCACHE
+
+RUN --mount=target=/tmp/.cache/gomodcache,id=firstrun-gomodcache,type=cache \
+    mkdir -p $GOMODCACHE \
+    && cp -r /tmp/.cache/gomodcache/* $GOMODCACHE
+
+RUN cp ./bin/firstrun-api /firstrun-api

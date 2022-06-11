@@ -1,0 +1,20 @@
+build:
+  firstrun-api:
+    context: .
+    dockerfile: Dockerfile.okteto
+
+deploy:
+  - cd kustomize/overlays/okteto && kustomize edit set image firstrun-api=${OKTETO_BUILD_FIRSTRUN_API_IMAGE}
+
+  - kubectl apply -k kustomize/overlays/okteto
+
+dev:
+  firstrun-api:
+    command: bash
+    workdir: /go/src/github.com/firstrunjq/firstrun
+    sync:
+      - .:/go/src/github.com/firstrunhq/firstrun
+    resources:
+      limits:
+        cpu: "2"
+        memory: 4Gi

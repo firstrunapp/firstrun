@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firstrun-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: firstrun-api
+          args: ["api", "--log-level", "debug"]
+
