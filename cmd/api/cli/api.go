@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/firstrunapp/firstrun/pkg/apiserver"
+	"github.com/firstrunapp/firstrun/pkg/config"
 	"github.com/firstrunapp/firstrun/pkg/logger"
 	"github.com/firstrunapp/firstrun/pkg/persistence"
 	homedir "github.com/mitchellh/go-homedir"
@@ -33,6 +34,12 @@ func APICmd() *cobra.Command {
 				return err
 			}
 			persistence.DBPath = dbPath
+
+			configPath, err := filepath.Abs(v.GetString("config-path"))
+			if err != nil {
+				return err
+			}
+			config.ConfigPath = configPath
 
 			apiserver.Start()
 			return nil

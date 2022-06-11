@@ -1,5 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./statefulset-api.yaml
-  - ./service-api.yaml
+  - ../../base
+  - ./clusterip.yaml
+
+patches:
+  - ./deployment.yaml
