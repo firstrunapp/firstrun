@@ -1,8 +1,13 @@
 package cli
 
 import (
+	"os"
+	"path/filepath"
+
 	"github.com/firstrunapp/firstrun/pkg/apiserver"
 	"github.com/firstrunapp/firstrun/pkg/logger"
+	"github.com/firstrunapp/firstrun/pkg/persistence"
+	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -23,12 +28,26 @@ func APICmd() *cobra.Command {
 				logger.SetDebug()
 			}
 
+			dbPath, err := filepath.Abs(v.GetString("db-path"))
+			if err != nil {
+				return err
+			}
+			persistence.DBPath = dbPath
+
 			apiserver.Start()
 			return nil
 		},
 	}
 
+	home, err := homedir.Dir()
+	if err != nil {
+		logger.Error(err)
+		os.Exit(1)
+	}
+
 	cmd.Flags().String("log-level", "info", "set the log level")
+	cmd.Flags().String("db-path", filepath.Join(home, "firstrun.db"), "set the path to the database")
+	cmd.Flags().String("config-path", filepath.Join(home, "firstrun"), "set the path to a directory of config files")
 
 	return cmd
 }

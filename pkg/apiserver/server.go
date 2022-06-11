@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/firstrunapp/firstrun/pkg/handlers"
+	"github.com/firstrunapp/firstrun/pkg/persistence"
 	"github.com/gorilla/mux"
 )
 
@@ -33,6 +34,11 @@ func Start() {
 	}
 
 	fmt.Printf("Starting firstrun-api on port %d...\n", 3000)
+
+	// initialize the database
+	if err := persistence.Init(); err != nil {
+		panic(err)
+	}
 
 	log.Fatal(srv.ListenAndServe())
 }
