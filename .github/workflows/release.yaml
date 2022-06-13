@@ -56,6 +56,7 @@ jobs:
         name: log in to docker registry
         with:
           registry: ghcr.io
+          username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build api image
