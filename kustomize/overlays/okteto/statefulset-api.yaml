@@ -1,14 +1,14 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: firstrun-api
 spec:
   template:
     spec:
       volumes:
-        - name: firstrun-config
-          configMap:
-            name: firstrun-config
+      - name: firstrun-config
+        configMap:
+          name: firstrun-config
       containers:
         - name: firstrun-api
           args: ["api", "--log-level", "debug"]

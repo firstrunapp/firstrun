@@ -23,3 +23,12 @@ func Init() error {
 
 	return nil
 }
+
+func Open() (*bolt.DB, error) {
+	db, err := bolt.Open(DBPath, 0600, nil)
+	if err != nil {
+		return nil, fmt.Errorf("open db, %w", err)
+	}
+
+	return db, nil
+}

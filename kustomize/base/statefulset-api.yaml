@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: firstrun-api
+spec:
+  selector:
+    matchLabels:
+      app: firstrun-api
+  serviceName: firstrun-api
+  template:
+    metadata:
+      labels:
+        app: firstrun-api
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: firstrun-api
+        image: firstrun-api
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 200m
+            memory: 1000Mi
+          requests:
+            cpu: 100m
+            memory: 500Mi
+        command:
+          - "/firstrun-api"
+        ports:
+          - name: http
+            containerPort: 3000
+        env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: FIRSTRUN_DB_PATH
+            value: /firstrun/firstrun.db
+        volumeMounts:
+        - name: firstrun-datadir
+          mountPath: /firstrun
+
+      volumes:
+      - name: firstrun-datadir
+        persistentVolumeClaim:
+          claimName: firstrun-datadir
+  volumeClaimTemplates:
+  - metadata:
+      name: firstrun-datadir
+    spec:
+      accessModes:
+      - "ReadWriteOnce"
+      resources:
+        requests:
+          storage: 1Gi
