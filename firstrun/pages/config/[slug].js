@@ -72,7 +72,7 @@ export async function getServerSideProps(ctx) {
 
   // let url = `${process.env.INTERNAL_API_ENDPOINT}/v1/group/${ctx.query.slug}`;
 
-  let url = `http://firstrun-api:3000/v1/group/${ctx.query.slug}`;
+  let url = `http://firstrun-api:3000/config/v1/group/${ctx.query.slug}`;
   try {
     const res = await fetch(url, {
       method: `GET`,
@@ -82,7 +82,8 @@ export async function getServerSideProps(ctx) {
     });
 
     if (!res.ok) {
-      return;
+      console.error("error", res);
+      return {props: {}};
     }
 
     const data = await res.json();
@@ -90,6 +91,7 @@ export async function getServerSideProps(ctx) {
     values = data.values;
   } catch (err) {
     console.error(err);
+    return {props: {}};
   }
 
   return {
