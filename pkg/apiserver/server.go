@@ -8,6 +8,7 @@ import (
 
 	"github.com/firstrunapp/firstrun/pkg/handlers"
 	"github.com/firstrunapp/firstrun/pkg/persistence"
+	gorillahandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -34,8 +35,10 @@ func Start() {
 	* Static routes
 	**********************************************************************/
 
+	loggedRouter := gorillahandlers.LoggingHandler(os.Stdout, r)
+
 	srv := &http.Server{
-		Handler: r,
+		Handler: loggedRouter,
 		Addr:    ":3000",
 	}
 
