@@ -3,5 +3,5 @@ module.exports = {
   experimental: {
     outputStandalone: true,
   },
-  basePath: "/config",
+  basePath: "/config/",
 }
