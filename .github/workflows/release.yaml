@@ -9,43 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/setup-go@v3
-        with:
-          go-version: '^1.17'
-
-      - name: setup env
+      - id: prep image
         run: |
-          echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-        shell: bash
-
-      - id: go-cache-paths
-        run: |
-          echo "::set-output name=go-build::$(go env GOCACHE)"
-          echo "::set-output name=go-mod::$(go env GOMODCACHE)"
-      - uses: actions/checkout@v3
-
-      - uses: actions/cache@v3
-        with:
-          path: ${{ steps.go-cache-paths.outputs.go-build }}
-          key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
-      - uses: actions/cache@v3
-        with:
-          path: ${{ steps.go-cache-paths.outputs.go-mod }}
-          key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
-
-      - run: make test
-      - run: make build
-
-      - id: prep-api
-        run: |
-          DOCKER_IMAGE=ghcr.io/firstrunapp/firstrun/firstrun-api
-          VERSION=${GITHUB_REF#refs/tags/}
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
-          echo ::set-output name=tags::${TAGS}
-      - id: prep-frontend
-        run: |
-          DOCKER_IMAGE=ghcr.io/firstrunapp/firstrun/firstrun-frontend
+          DOCKER_IMAGE=ghcr.io/firstrunapp/firstrun/firstrun
           VERSION=${GITHUB_REF#refs/tags/}
           TAGS="${DOCKER_IMAGE}:${VERSION}"
           echo ::set-output name=tags::${TAGS}
@@ -58,14 +24,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build api image
-        uses: docker/build-push-action@v2.6.1
-        with:
-          context: .
-          tags: ${{ steps.prep-api.outputs.tags }}
-          file: ./deploy/Dockerfile.api
-          push: true
 
       - name: Build frontend image
         uses: docker/build-push-action@v2.6.1

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: firstrun
+spec:
+  selector:
+    matchLabels:
+      app: firstrun
+  serviceName: firstrun
+  template:
+    metadata:
+      labels:
+        app: firstrun
+    spec:
+      containers:
+        - name: firstrun
+          image: firstrun
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: FIRSTRUN_DB_PATH
+            value: /firstrun/firstrun.db
+          volumeMounts:
+          - name: firstrun-datadir
+            mountPath: /firstrun
+
+      volumes:
+      - name: firstrun-datadir
+        persistentVolumeClaim:
+          claimName: firstrun-datadir
+  volumeClaimTemplates:
+  - metadata:
+      name: firstrun-datadir
+    spec:
+      accessModes:
+      - "ReadWriteOnce"
+      resources:
+        requests:
+          storage: 1Gi
+

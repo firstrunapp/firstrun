@@ -1,31 +1,19 @@
 build:
-  firstrun-api:
-    context: .
-    dockerfile: Dockerfile.okteto
-  firstrun-frontend:
+  firstrun:
     context: firstrun
     dockerfile: firstrun/Dockerfile.okteto
+    args:
+      - OKTETO_NAMESPACE=${OKTETO_NAMESPACE}
 
 deploy:
-  - envsubst < firstrun/.env.tmpl > firstrun/.env
-
-  - cd kustomize/overlays/okteto && kustomize edit set image firstrun-frontend=${OKTETO_BUILD_FIRSTRUN_FRONTEND_IMAGE}
-  - cd kustomize/overlays/okteto && kustomize edit set image firstrun-api=${OKTETO_BUILD_FIRSTRUN_API_IMAGE}
+  - cd kustomize/overlays/okteto && kustomize edit set image firstrun=${OKTETO_BUILD_FIRSTRUN_IMAGE}
 
   - kubectl apply -k kustomize/overlays/okteto
 
 dev:
-  firstrun-api:
-    command: bash
-    workdir: /go/src/github.com/firstrunhq/firstrun
-    sync:
-      - .:/go/src/github.com/firstrunhq/firstrun
-    resources:
-      limits:
-        cpu: "2"
-        memory: 4Gi
-  firstrun-frontend:
-    command: yarn && yarn dev
+  firstrun:
+    command: |
+      yarn && yarn dev
     workdir: /okteto
     sync:
       - ./firstrun:/okteto
@@ -33,5 +21,3 @@ dev:
       limits:
         cpu: "2"
         memory: 4Gi
-    environment:
-      - FIRSTRUN_API=https://firstrun-api-${OKTETO_NAMESPACE}.cloud.okteto.net

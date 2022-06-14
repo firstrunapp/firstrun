@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: firstrun
   labels:
-    app: firstrun-frontend
+    app: firstrun
   annotations:
     dev.okteto.com/auto-ingress: "true"
 spec:
@@ -13,4 +13,4 @@ spec:
     port: 3000
     targetPort: http
   selector:
-    app: firstrun-frontend
+    app: firstrun

@@ -1,30 +1,55 @@
 import Layout from "../components/layout";
 import Sidebar from "../components/sidebar";
 
+import { isAuthed } from "../lib/auth";
+import { loadSchema } from "../lib/schema/schema";
+
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import router, { useRouter } from 'next/router'
+import cookies from 'next-cookies';
 
-export default function Page() {
+export default function Page({groups, appName}) {
   return (
-    <div>
+    <>
+      <Sidebar groups={groups} appName={appName} />
       Select a group on the left to get started.
-    </div>
+    </>
   );
 }
 
 Page.getLayout = function getLayout(page) {
   return (
     <Layout>
-      <Sidebar />
-      Home page, should not see this.
+      {page}
     </Layout>
   );
 }
 
-// This is here to disable https://nextjs.org/docs/advanced-features/automatic-static-optimization
-// specifically the router.query isn't loaded without this
-Page.getInitialProps = async (ctx) => {
-  return {};
-}
 
+export async function getServerSideProps(ctx) {
+  const c = cookies(ctx);
+  const authed = await isAuthed(c.auth);
+  if (!authed) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+      props:{},
+    };
+  }
+
+  const schema = await loadSchema();
+
+
+    // groups = data.groups;
+    // appName = data.appName;
+
+  return {
+    props: {
+        appName: "test",
+        groups: schema.groups,
+    },
+  };
+}

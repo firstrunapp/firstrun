@@ -3,13 +3,16 @@ import Sidebar from "../../components/sidebar";
 import React from 'react';
 import { Theme } from "@rjsf/bootstrap-4";
 import { withTheme, utils } from "@rjsf/core";
+import cookies from 'next-cookies';
+import { isAuthed } from "../../lib/auth";
+import { loadSchema, loadValues } from "../../lib/schema/schema";
 
 const registry = utils.getDefaultRegistry();
 const defaultFileWidget = registry.widgets["FileWidget"];
 Theme.widgets["FileWidget"] = defaultFileWidget;
 const Form = withTheme(Theme);
 
-function Page({schema, values, slug}) {
+function Page({groups, appName, schema, values, slug}) {
   const onSubmit = async (data) => {
     const items = [];
     for (const [key, value] of Object.entries(data.formData)) {
@@ -22,7 +25,7 @@ function Page({schema, values, slug}) {
     }
 
     try {
-      let url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/v1/items`;
+      let url = `/api/items`;
       const res = await fetch(url, {
         method: `PUT`,
         headers: {
@@ -48,58 +51,52 @@ function Page({schema, values, slug}) {
   }
 
   return (
-    <div>
-      <Form schema={schema}
-        formData={values}
-        onSubmit={onSubmit} />
-    </div>
+    <>
+      <Sidebar appName={appName} groups={groups} />
+      <div className="d-flex flex-column p-3" style={{width: "100%"}}>
+        <Form schema={schema}
+          formData={values}
+          onSubmit={onSubmit} />
+      </div>
+    </>
   )
 }
 
 Page.getLayout = function getLayout(page) {
   return (
     <Layout>
-      <Sidebar />
-      <div className="d-flex flex-column p-3" style={{width: "100%"}}>
-        {page}
-      </div>
+      {page}
     </Layout>
   );
 }
 
 export async function getServerSideProps(ctx) {
-  let schema, values;
-
-  // let url = `${process.env.INTERNAL_API_ENDPOINT}/v1/group/${ctx.query.slug}`;
-
-  console.log(process.env.INTERNAL_API_ENDPOINT);
-  let url = `http://firstrun-api:3000/config/v1/group/${ctx.query.slug}`;
-  try {
-    const res = await fetch(url, {
-      method: `GET`,
-      headers: {
-        "Content-Type": "application/json",
+  const c = cookies(ctx);
+  const authed = await isAuthed(c.auth);
+  if (!authed) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
       },
-    });
-
-    if (!res.ok) {
-      console.error("error", res);
-      return {props: {}};
-    }
-
-    const data = await res.json();
-    schema = JSON.parse(data.schema);
-    values = data.values;
-  } catch (err) {
-    console.error(err);
-    return {props: {}};
+      props:{},
+    };
   }
+
+  const schema = await loadSchema();
+  const group = schema.groups.find((group) => {
+    return ctx.query.slug === group.href;
+  });
+
+  const values = await loadValues(group.href);
 
   return {
     props: {
-      schema,
+      schema: group,
       values,
       slug: ctx.query.slug,
+      groups: schema.groups,
+      appName: "test",
     },
   };
 }

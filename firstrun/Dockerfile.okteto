@@ -1,11 +1,16 @@
-FROM node:16
+FROM node:16-bullseye
 EXPOSE 3000 9229
 
+RUN apt update && apt install -y apt-transport-https ca-certificates sqlite3
+
+ARG OKTETO_NAMESPACE=okteto
 
 COPY package.json yarn.lock ./
-RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install
+
+RUN yarn install
 
 COPY . .
-RUN --mount=type=cache,target=./node_modules/.cache/webpack yarn build
+
+RUN yarn build
 
 ENTRYPOINT ["yarn", "dev"]

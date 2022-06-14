@@ -1,0 +1,12 @@
+site_name: FirstRun
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+pages:
+  - Quick Start:
+    - index.md
+  - Contributing:
+    - contributing/index.md
