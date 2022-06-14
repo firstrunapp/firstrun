@@ -70,8 +70,12 @@ Page.getLayout = function getLayout(page) {
 export async function getServerSideProps(ctx) {
   let schema, values;
 
+  let url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/v1/group/${ctx.query.slug}`;
+  if (!url.startsWith("http")) {
+    url = `${window.location.origin}${url}`;
+  }
+
   try {
-    let url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/v1/group/${ctx.query.slug}`;
     const res = await fetch(url, {
       method: `GET`,
       headers: {
