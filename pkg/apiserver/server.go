@@ -24,11 +24,11 @@ func Start() {
 
 	r.HandleFunc("/healthz", handlers.Healthz)
 
-	r.Path("/v1/groups").Methods("GET").HandlerFunc(handlers.ListConfigGroups)
-	r.Path("/v1/group/{slug}").Methods("GET").HandlerFunc(handlers.ListConfigGroupItems)
-	r.Path("/v1/items").Methods("PUT").HandlerFunc(handlers.UpdateConfigItemValues)
+	r.Path("/config/v1/groups").Methods("GET").HandlerFunc(handlers.ListConfigGroups)
+	r.Path("/config/v1/group/{slug}").Methods("GET").HandlerFunc(handlers.ListConfigGroupItems)
+	r.Path("/config/v1/items").Methods("PUT").HandlerFunc(handlers.UpdateConfigItemValues)
 
-	r.Path("/v1/values").Methods("GET").HandlerFunc(handlers.ListConfigItemValues)
+	r.Path("/config/v1/values").Methods("GET").HandlerFunc(handlers.ListConfigItemValues)
 
 	/**********************************************************************
 	* Static routes
