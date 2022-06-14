@@ -72,6 +72,7 @@ export async function getServerSideProps(ctx) {
 
   // let url = `${process.env.INTERNAL_API_ENDPOINT}/v1/group/${ctx.query.slug}`;
 
+  console.log(process.env.INTERNAL_API_ENDPOINT);
   let url = `http://firstrun-api:3000/config/v1/group/${ctx.query.slug}`;
   try {
     const res = await fetch(url, {
