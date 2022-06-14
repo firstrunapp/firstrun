@@ -49,7 +49,7 @@ export default function Component() {
   const items = groups.map((group) => {
     return (
       <li key={group.index}>
-        <Link passHref href={`/config/${group.href}`}><a className="nav-link text-white">{group.title}</a></Link>
+        <Link passHref href={`/group/${group.href}`}><a className="nav-link text-white">{group.title}</a></Link>
       </li>
     );
   });
