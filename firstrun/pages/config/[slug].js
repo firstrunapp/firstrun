@@ -70,8 +70,9 @@ Page.getLayout = function getLayout(page) {
 export async function getServerSideProps(ctx) {
   let schema, values;
 
-  let url = `${process.env.INTERNAL_API_ENDPOINT}/v1/group/${ctx.query.slug}`;
+  // let url = `${process.env.INTERNAL_API_ENDPOINT}/v1/group/${ctx.query.slug}`;
 
+  let url = `http://firstrun-api:3000/v1/group/${ctx.query.slug}`;
   try {
     const res = await fetch(url, {
       method: `GET`,
