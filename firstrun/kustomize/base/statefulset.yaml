@@ -21,6 +21,8 @@ spec:
             value: /firstrun/firstrun.db
           - name: FIRSTRUN_CONFIG_PATH
             value: /firstrun/config
+          - name: INTERNAL_API_TOKEN
+            value: not-set
           volumeMounts:
           - name: firstrun-datadir
             mountPath: /firstrun

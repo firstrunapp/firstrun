@@ -38,12 +38,18 @@ export async function loadValues(groupHref: string): Promise<Object> {
 }
 
 export async function loadDefaults(groupHref: string): Promise<Object> {
-  console.log("asdasd2");
   const schema = await loadSchema();
   for (const group of schema.groups) {
     if (group.href === groupHref) {
       const data = await fs.readFile(group.filename);
-      console.log(JSON.parse(data));
+      const parsed = JSON.parse(data);
+
+      let defaults: { [k: string]: any } = await loadValues(groupHref);
+      for (const k in parsed.properties) {
+        defaults[k] = parsed.properties[k].default || null;
+      }
+
+      return defaults;
     }
   }
 

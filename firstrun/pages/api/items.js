@@ -1,4 +1,4 @@
-import { loadSchema, loadValues, setValue } from "../../lib/schema/schema";
+import { loadSchema, loadValues, loadDefaults, setValue } from "../../lib/schema/schema";
 
 export default async function handler(req, res) {
   if (req.method === 'PUT') {
@@ -25,17 +25,15 @@ export default async function handler(req, res) {
 
     const token = tokenParts[1];
 
-    if (token !== "abcdef") {
+    if (token !== process.env.INTERNAL_API_TOKEN) {
       res.status(401).json({message: "Unauthorized"});
       return;
     }
 
     const schema = await loadSchema();
-    console.log("asdasd");
-    console.log(schema.groups);
 
     let values = {};
-    for (const group in schema.groups) {
+    for (const group of schema.groups) {
       const groupDefaults = await loadDefaults(group.href);
       const groupValues = await loadValues(group.href);
       values = {...values, ...groupDefaults, ...groupValues};
