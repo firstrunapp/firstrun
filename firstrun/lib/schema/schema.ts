@@ -38,8 +38,11 @@ export async function loadValues(groupHref: string): Promise<Object> {
 }
 
 export async function loadSchema(): Promise<Schema | undefined> {
-  const dir = path.join("/", "root", "firstrun");
-  const files = await getFilesFromDirectory(dir);
+  const configDir = process.env.FIRSTRUN_CONFIG_PATH ?
+    process.env.FIRSTRUN_CONFIG_PATH :
+    "/firstrun";
+
+  const files = await getFilesFromDirectory(configDir);
 
   const schema = new Schema();
   let i = 0;

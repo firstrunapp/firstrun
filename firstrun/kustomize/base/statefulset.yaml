@@ -19,6 +19,8 @@ spec:
           env:
           - name: FIRSTRUN_DB_PATH
             value: /firstrun/firstrun.db
+          - name: FIRSTRUN_CONFIG_PATH
+            value: /firstrun/config
           volumeMounts:
           - name: firstrun-datadir
             mountPath: /firstrun

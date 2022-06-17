@@ -16,4 +16,4 @@ spec:
               containerPort: 3000
           volumeMounts:
             - name: firstrun-config
-              mountPath: /root/firstrun
+              mountPath: /firstrun/config

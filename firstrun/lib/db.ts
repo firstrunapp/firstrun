@@ -7,8 +7,11 @@ const os = require("os");
 let db: any;
 
 function getDBPath() {
-  const userHomeDir = os.homedir();
-  return path.join(userHomeDir, "firstrun.db");
+  const dbPath = process.env.FIRSTRUN_DB_PATH ?
+    process.env.FIRSTRUN_DB_PATH :
+    "/root/firstrun.db";
+
+  return dbPath;
 }
 
 export async function getDB() {
