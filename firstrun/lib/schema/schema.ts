@@ -37,7 +37,26 @@ export async function loadValues(groupHref: string): Promise<Object> {
   return parsed;
 }
 
-export async function loadSchema(): Promise<Schema | undefined> {
+export async function loadDefaults(groupHref: string): Promise<Object> {
+  const schema = await loadSchema();
+  for (const group of schema.groups) {
+    if (group.href === groupHref) {
+      const data = await fs.readFile(group.filename);
+      const parsed = JSON.parse(data);
+
+      let defaults: { [k: string]: any } = await loadValues(groupHref);
+      for (const k in parsed.properties) {
+        defaults[k] = parsed.properties[k].default || null;
+      }
+
+      return defaults;
+    }
+  }
+
+  return {};
+}
+
+export async function loadSchema(): Promise<Schema> {
   const configDir = process.env.FIRSTRUN_CONFIG_PATH ?
     process.env.FIRSTRUN_CONFIG_PATH :
     "/firstrun";
