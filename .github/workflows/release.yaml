@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-18.04
     steps:
-      - id: prep image
+      - name: Prep image
         run: |
           DOCKER_IMAGE=ghcr.io/firstrunapp/firstrun/firstrun
           VERSION=${GITHUB_REF#refs/tags/}
