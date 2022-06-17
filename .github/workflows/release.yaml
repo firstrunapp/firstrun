@@ -9,6 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-18.04
     steps:
+      - uses: actions/checkout@v3
+
       - id: prep-image
         run: |
           DOCKER_IMAGE=ghcr.io/firstrunapp/firstrun/firstrun
