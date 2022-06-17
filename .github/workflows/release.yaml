@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-18.04
     steps:
-      - name: Prep image
+      - name: prep-image
         run: |
           DOCKER_IMAGE=ghcr.io/firstrunapp/firstrun/firstrun
           VERSION=${GITHUB_REF#refs/tags/}
@@ -29,7 +29,7 @@ jobs:
         uses: docker/build-push-action@v2.6.1
         with:
           context: ./firstrun
-          tags: ${{ steps.prep-frontend.outputs.tags }}
+          tags: ${{ steps.prep-image.outputs.tags }}
           file: ./deploy/Dockerfile.frontend
           push: true
 
