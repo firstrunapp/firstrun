@@ -37,7 +37,20 @@ export async function loadValues(groupHref: string): Promise<Object> {
   return parsed;
 }
 
-export async function loadSchema(): Promise<Schema | undefined> {
+export async function loadDefaults(groupHref: string): Promise<Object> {
+  console.log("asdasd2");
+  const schema = await loadSchema();
+  for (const group of schema.groups) {
+    if (group.href === groupHref) {
+      const data = await fs.readFile(group.filename);
+      console.log(JSON.parse(data));
+    }
+  }
+
+  return {};
+}
+
+export async function loadSchema(): Promise<Schema> {
   const configDir = process.env.FIRSTRUN_CONFIG_PATH ?
     process.env.FIRSTRUN_CONFIG_PATH :
     "/firstrun";
