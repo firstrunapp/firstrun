@@ -21,7 +21,7 @@ export default function Page() {
     setShowError(false);
 
     try {
-      let url = `/api/login`;
+      let url = `/config/api/login`;
       const res = await fetch(url, {
         method: `POST`,
         headers: {

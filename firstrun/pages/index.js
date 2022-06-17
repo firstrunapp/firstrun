@@ -48,7 +48,7 @@ export async function getServerSideProps(ctx) {
 
   return {
     props: {
-        appName: "test",
+        appName: "App Configuration",
         groups: schema.groups,
     },
   };

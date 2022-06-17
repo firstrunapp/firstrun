@@ -25,7 +25,7 @@ function Page({groups, appName, schema, values, slug}) {
     }
 
     try {
-      let url = `/api/items`;
+      let url = `/config/api/items`;
       const res = await fetch(url, {
         method: `PUT`,
         headers: {
@@ -96,7 +96,7 @@ export async function getServerSideProps(ctx) {
       values,
       slug: ctx.query.slug,
       groups: schema.groups,
-      appName: "test",
+      appName: "Application Config",
     },
   };
 }
