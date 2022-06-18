@@ -1,4 +1,6 @@
+import { getDB } from "../../lib/db";
 import { loadSchema, loadValues, loadDefaults, setValue } from "../../lib/schema/schema";
+var request = require('request');
 
 export default async function handler(req, res) {
   if (req.method === 'PUT') {
@@ -7,7 +9,23 @@ export default async function handler(req, res) {
       await setValue(item.groupHref, item.itemName, item.value);
     }
 
-    res.status(200).json({message: "Saved"});
+    // fire any callbacks
+    // this really should be async
+
+    const db = await getDB()
+    const callbacks = await db.all(`select url, invalid_count from callback_url where invalid_count < 3`);
+    callbacks.forEach((callback) => {
+      request.post(
+        callback.url,
+        { },
+        async function (err, response, body) {
+            if (err || response.statusCode >= 400) {
+                await db.run(`update callback_url set invalid_count = $1 where url = $2`, callback.invalid_count, callback.url);
+            }
+        }
+      );
+    })
+    res.status(200).json({message: "Values saved."});
     return;
   } else if (req.method === 'GET') {
     // only support internal api token auth for now

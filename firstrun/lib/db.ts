@@ -35,5 +35,7 @@ async function applySchema(d: any) {
 
   await d.run(`create table if not exists group_values (group_href text not null primary key, vals text not null)`);
 
+  await d.run(`create table if not exists callback_url (url text not null primary key, invalid_count not null)`);
+
   return null;
 }
