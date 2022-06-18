@@ -45,11 +45,6 @@ function Page({groups, appName, schema, values, slug}) {
     }
   };
 
-  // react json schema form doens't work with server side rendering
-  if (!global.window) {
-    return <div><form /></div>;
-  }
-
   return (
     <>
       <Sidebar appName={appName} groups={groups} />

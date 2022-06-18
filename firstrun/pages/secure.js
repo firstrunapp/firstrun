@@ -35,7 +35,7 @@ export default function Page() {
     setShowError(false);
 
     try {
-      let url = `/api/auth`;
+      let url = `/config/api/auth`;
       const res = await fetch(url, {
         method: `PUT`,
         headers: {
